@@ -58,7 +58,7 @@ function treeNode(val) {
   this.right = null;
 }
 
-export function buildTree(preArr,middleArr) {
+export function buildTree(preArr, middleArr) {
   /*
     有一个前序遍历 [1,2,4,5,7,8,3,6]
     中序遍历 [4,2,7,5,8,1,3,6]
@@ -90,5 +90,55 @@ export function buildTree(preArr,middleArr) {
     root.right = new treeNode(rightPre[0]);
   }
 
+  return root;
+}
+
+export function traversing(arr) {
+  /*
+    层次遍历 [1,2,3,4,5,null,6,null,null,7,8,null,null]
+    这个层次遍历需要特定的遍历数组，要针对二叉树的特性，组合而成
+    二叉树的特性，一个节点，最多有两个子树
+    再利用队列的先进先出特性
+    如上面的例子中
+    1 是节点 后面的2 3 分别是左右子树
+    2 是节点 后面的4 5 分别是左右子树
+    3 是节点 后面的null 6 分别是左右子树
+    4 是节点 后面的null null 分别是左右子树
+    5 是节点 7 8 分别是左右子树
+    . 
+    . 
+    . 
+
+    此时应该是需要两个队列的
+    一个是原始来源的数据队列：这个队列吐出数据
+    一个是有效节点数据队列：这个队列由上个产生的数据生成的节点构成
+
+    为啥要分成两个队列呢
+    因为一个二叉树节点，由它本身的数值和两个子树构成（可能子树为空）
+    第一个队列是根据它本身的数组，生成节点
+    第二个队列则是给这个节点的左右子树赋值
+    两个步骤下来，才能组装成一个完整的树节点
+    然后递归，就能产生一个完整的树了
+  */
+  let queue = [];
+  let root = new treeNode(arr.shift());
+  queue.push(root);
+
+  while (queue.length >= 1) {
+    console.log(queue.length);
+    let node = queue.shift();
+
+    if (arr.length >= 1) {
+      node.left = new treeNode(arr.shift());
+      if (node.left.value !== null) {
+        queue.push(node.left);
+      }
+
+      node.right = new treeNode(arr.shift());
+      if (node.right.value !== null) {
+        queue.push(node.right);
+      }
+    }
+  }
   return root;
 }
